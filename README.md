@@ -43,7 +43,7 @@ URL Shield offers a different path to achieving uninteruppted mobile youtube bro
  
 > Expected: Navigation Back $\rightarrow$ Previous Page (e.g., YouTube Homepage).
 
-> Actual: Navigation Back $\rightarrow$ Broken/Frozen YouTube Client $\rightarrow$ (Second Back Click) $\rightarrow$ Previous Page.
+> Actual: Navigation Back $\rightarrow$ Broken/Frozen YouTube Video Player/Client $\rightarrow$ (Second Back Click) $\rightarrow$ Previous Page.
 
 <br>
 
