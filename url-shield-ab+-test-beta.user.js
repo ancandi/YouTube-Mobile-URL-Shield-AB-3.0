@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name YouTube Mobile URL Shield AB+
 // @namespace http://tampermonkey.com/
-// @version 5.1
-// @description Auto-Unmute on /watch + Persistence + Data Predator
+// @version 5.2
+// @description Isolated /watch Auto-Unmute + Persistent Home Bar + Data Predator
 // @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
@@ -52,7 +52,7 @@
     visualBar.innerText = 'TAP TO UNMUTE';
     shield.appendChild(visualBar);
 
-    // --- 3. THE RESUME ENGINE (Burst Hammer) ---
+    // --- 3. THE RESUME ENGINE (10ms Hammer) ---
     const startForceResume = (videos) => {
         if (forceResumeTimer) clearInterval(forceResumeTimer);
         let attempts = 0;
@@ -60,7 +60,7 @@
             videos.forEach(v => {
                 if (v.paused && v.readyState >= 1) v.play().catch(() => {});
             });
-            if (++attempts > 50) clearInterval(forceResumeTimer);
+            if (++attempts > 60) clearInterval(forceResumeTimer);
         }, 10); 
     };
 
@@ -72,7 +72,7 @@
 
     ['touchstart', 'click'].forEach(evt => shield.addEventListener(evt, handleInteraction, { capture: true, passive: false }));
 
-    // --- 4. MAINTENANCE & AUTO-STRIKE LOOP ---
+    // --- 4. MAINTENANCE & ISOLATED AUTO-LOGIC ---
     setInterval(() => {
         const isWatch = window.location.pathname.startsWith('/watch');
         const videos = document.querySelectorAll('video');
@@ -81,8 +81,7 @@
         if (isWatch) {
             shield.style.top = '0'; shield.style.height = '100vh';
             
-            // AUTO-STRIKE FEATURE: On /watch, we auto-trigger the unmute intent
-            // This simulates the "tap" by itself the moment a video is detected
+            // --- ISOLATED AUTO-STRIKE ONLY ON WATCH ---
             if (videos.length > 0 && videos[0].muted && !userWantsUnmute && !adShowing) {
                 userWantsUnmute = true; 
             }
@@ -92,32 +91,28 @@
                 window.location.replace(window.location.href);
             }
         } else {
+            // Homepage: Manual Tap Required (Persistence Restore)
             shield.style.top = 'auto'; shield.style.bottom = '0'; shield.style.height = '100px';
         }
 
-        // UNMUTE ENFORCER
+        // UNMUTE & RESUME ENFORCER
         if (userWantsUnmute) {
             let success = false;
             videos.forEach(v => {
                 if (v.src && v.readyState >= 1) {
                     v.muted = false; v.volume = 1.0;
                     activeSrc = v.src;
-                    if (!v.muted) {
-                        success = true;
-                        // Trigger the native UI update so volume bars etc. appear correctly
-                        const btn = document.querySelector('.ytp-unmute, .ytp-mute-button');
-                        if (btn) btn.click(); 
-                    }
+                    if (!v.muted) success = true;
                 }
             });
             if (success) {
                 userWantsUnmute = false; shield.style.display = 'none';
-                startForceResume(videos);
+                startForceResume(videos); // Ensure it resumes immediately
                 playStartTime = Date.now();
             }
         }
 
-        // UI RECOVERY
+        // UI RECOVERY (Black Screen Fix)
         if (videos[0] && !videos[0].paused && !videos[0].muted && !adShowing && playStartTime > 0) {
             if (Date.now() - playStartTime > 800) {
                 sessionStorage.removeItem('yt-ad-reload-active');
@@ -127,11 +122,15 @@
             }
         }
 
-        // VISIBILITY (Only shows if Auto-Strike fails due to browser restrictions)
+        // VISIBILITY LOGIC
         let needsShield = false;
         videos.forEach(v => {
+            // On Watch, auto-logic usually kills this before you see it.
+            // On Home, this displays the bar for muted feed videos.
             if (v.muted && v.src !== activeSrc && !adShowing) needsShield = true;
-            if (v.src !== activeSrc && activeSrc !== "") { activeSrc = ""; userWantsUnmute = false; }
+            if (v.src !== activeSrc && activeSrc !== "") { 
+                activeSrc = ""; userWantsUnmute = false; 
+            }
         });
 
         if (needsShield || userWantsUnmute) {
