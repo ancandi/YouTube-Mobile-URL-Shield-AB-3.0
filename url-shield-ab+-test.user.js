@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name YouTube Mobile URL Shield - Stable Core
+// @name YouTube Mobile URL Shield - Icon Aware
 // @namespace http://tampermonkey.com/
-// @version 5.0.0
-// @description Stable Ad-Busting + Nuclear Reload + Resume Hammer (No Search Bar)
+// @version 5.1.0
+// @description Detects native Mute Icon on /results to trigger Unmute Bar
 // @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
@@ -12,18 +12,16 @@
 (function() {
     'use strict';
 
-    let forceResumeTimer = null;
+    let lastTapTime = 0;
     let isNavigating = false;
 
     // --- 1. NAVIGATION STABILIZER ---
-    // Prevents the script from triggering reloads during Back/Forward navigation
     window.addEventListener('popstate', () => {
         isNavigating = true;
         setTimeout(() => { isNavigating = false; }, 1200);
     });
 
-    // --- 2. NUCLEAR RELOAD ENGINE ---
-    // Forces a hard refresh with a cache-buster when an ad is detected
+    // --- 2. NUCLEAR RELOAD (Ad Purge) ---
     const nuclearReload = () => {
         if (isNavigating) return;
         const currentUrl = new URL(window.location.href);
@@ -33,69 +31,82 @@
     };
 
     // --- 3. DATA PREDATOR ---
-    // Strips ad elements and prevents them from loading data
     const predator = new MutationObserver((mutations) => {
         for (let i = 0; i < mutations.length; i++) {
             const nodes = mutations[i].addedNodes;
             for (let j = 0; j < nodes.length; j++) {
                 const node = nodes[j];
                 if (node.nodeType !== 1) continue;
-
-                const isAd = node.classList?.contains('ad-showing') || 
-                             node.closest?.('.ad-showing') || 
-                             node.querySelector?.('.ytd-ad-slot-renderer') ||
-                             node.closest?.('ytm-promoted-video-renderer');
-
-                if (isAd && !isNavigating) { 
-                    nuclearReload(); 
-                    return; 
-                }
-                
-                // General data stripping during active reload sessions
-                if (sessionStorage.getItem('yt-ad-reload-active') === 'true' && ['VIDEO', 'IMG', 'IMAGE'].includes(node.tagName)) {
-                    // We allow search results to keep images so you can still browse
-                    if (!window.location.pathname.startsWith('/results')) {
-                        node.src = ''; node.remove(); 
-                    }
-                }
+                const isAd = node.classList?.contains('ad-showing') || node.closest?.('.ad-showing') || node.querySelector?.('.ytd-ad-slot-renderer');
+                if (isAd && !isNavigating) { nuclearReload(); return; }
             }
         }
     });
     predator.observe(document.documentElement, { childList: true, subtree: true });
 
-    // --- 4. THE RESUME HAMMER ---
-    // Forces the video to play after a user interacts with the page
-    const startForceResume = (videos) => {
-        if (forceResumeTimer) clearInterval(forceResumeTimer);
-        let attempts = 0;
-        forceResumeTimer = setInterval(() => {
-            videos.forEach(v => {
-                if (v.paused && v.readyState >= 1 && !v.closest('.ad-showing')) {
-                    v.play().catch(() => {});
-                }
-            });
-            if (++attempts > 50) clearInterval(forceResumeTimer);
-        }, 10); 
-    };
+    // --- 4. THE UI SHIELD (Strictly for /results) ---
+    const shield = document.createElement('div');
+    Object.assign(shield.style, {
+        position: 'fixed', left: '0', bottom: '0', width: '100vw', height: '100px',
+        zIndex: '2147483647', display: 'none', cursor: 'pointer', touchAction: 'manipulation'
+    });
 
-    // Listen for any tap on the document to trigger the Resume Hammer
-    document.addEventListener('touchstart', () => {
+    const visualBar = document.createElement('div');
+    Object.assign(visualBar.style, {
+        position: 'absolute', inset: '0', backgroundColor: '#0f0f0f', color: '#ffffff',
+        textAlign: 'center', lineHeight: '100px', fontSize: '18px', fontWeight: 'bold',
+        fontFamily: 'sans-serif', borderTop: '1px solid #333'
+    });
+    visualBar.innerText = 'TAP TO UNMUTE SEARCH RESULT';
+    shield.appendChild(visualBar);
+    document.body.appendChild(shield);
+
+    // --- 5. THE UNMUTE ACTIVATOR ---
+    shield.addEventListener('touchstart', (e) => {
+        e.preventDefault();
         const videos = document.querySelectorAll('video');
-        startForceResume(videos);
-    }, { passive: true });
+        videos.forEach(v => {
+            v.muted = false;
+            v.volume = 1.0;
+            v.play().catch(() => {});
+        });
+        lastTapTime = Date.now();
+        shield.style.display = 'none';
+    }, { capture: true, passive: false });
 
-    // --- 5. MAINTENANCE LOOP ---
+    // --- 6. SMART DETECTION LOOP ---
     setInterval(() => {
-        const adShowing = !!document.querySelector('.ad-showing') || !!document.querySelector('ytm-promoted-video-renderer');
-        
-        if (adShowing && !isNavigating) { 
-            nuclearReload(); 
+        const path = window.location.pathname;
+        if (!path.startsWith('/results')) {
+            shield.style.display = 'none';
+            return;
         }
 
-        // Cleanup the reload flag once a video is successfully playing
-        const mainVideo = document.querySelector('video');
-        if (mainVideo && !mainVideo.paused && !adShowing) {
-            sessionStorage.removeItem('yt-ad-reload-active');
+        const adShowing = !!document.querySelector('.ad-showing');
+        if (adShowing && !isNavigating) { nuclearReload(); return; }
+
+        // COOLDOWN: Don't show immediately after a tap
+        if (Date.now() - lastTapTime < 3000) return;
+
+        // --- ICON DETECTION LOGIC ---
+        // We search for YouTube's native "Muted" icon (Speaker with X / Mute Overlay)
+        // Usually found in ytm-muted-autoplay-status-renderer or similar paths
+        const muteIcons = document.querySelectorAll('ytm-muted-autoplay-status-renderer, .Muted, [aria-label*="unmute"], .icon-button[aria-pressed="false"]');
+        
+        let shouldShowBar = false;
+        muteIcons.forEach(icon => {
+            const rect = icon.getBoundingClientRect();
+            // If the icon is visible on screen, it means the video is "Audio Receivable" but muted
+            if (rect.top > 0 && rect.bottom < window.innerHeight) {
+                shouldShowBar = true;
+            }
+        });
+
+        if (shouldShowBar) {
+            shield.style.display = 'block';
+        } else {
+            shield.style.display = 'none';
         }
+
     }, 100);
 })();
