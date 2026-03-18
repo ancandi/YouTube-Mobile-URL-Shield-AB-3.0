@@ -36,7 +36,11 @@ URL Shield offers a different path to achieving uninteruppted mobile youtube bro
 
 ## ⚙️ Other Utility Extensions
 - You might want to try out other userscript utilities available on both Mobile/Desktop such as: [[Evade - Link Bypasser]](skipped.lol)
-  
+
+<br>
+
+> **⚠️ One known issue:** Navigating to the previous page after a reload may display a broken YouTube client. Previous YouTube pages are now 1 page in distance for navigation. 
+
 <br>
 
 ## ⚡️ How is this shield protection script different?
