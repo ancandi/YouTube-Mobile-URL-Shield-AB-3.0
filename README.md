@@ -39,7 +39,7 @@ URL Shield offers a different path to achieving uninteruppted mobile youtube bro
 
 <br>
 
-> **⚠️ One known issue:** Navigating to the <ins>**previous page**</ins> after a reload <ins>**may display a broken YouTube client.**</ins> Previous YouTube homepages where the <ins>**current video**</ins> was routed <ins>**are now 1 page back**</ins> from navigation.
+> **⚠️ One known issue:** Navigating to the <ins>**previous page**</ins> after a reload <ins>**may display a broken YouTube client.**</ins> Previous YouTube homepages where the <ins>**current video playing**</ins> was routed <ins>**are now 1 page back**</ins> from navigation.
 
 <br>
 
