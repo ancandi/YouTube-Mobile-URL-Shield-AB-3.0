@@ -67,6 +67,8 @@ This is a security feature of your mobile browser (Chrome/Safari), not a bug in 
 
 To make this seamless, we provided a "Tap to Unmute" zone at the bottom of the screen. You may need to repeat this over several videos because of how fragile the video player works during YouTube monetization.
 
+## This project is a work in progress. 
+If you have ideas for better data blockade, or want UI improvements like customizing and bringing the tap to unmute to any playing video, I’d love for you to contribute in any way. Please reach out by opening a new issue!
 <br>
 
 ## Copyright
