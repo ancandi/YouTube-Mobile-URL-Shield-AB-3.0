@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name YouTube Mobile URL Shield - Icon Aware
+// @name YouTube Mobile URL Shield - Surgical Search
 // @namespace http://tampermonkey.com/
-// @version 5.1.0
-// @description Detects native Mute Icon on /results to trigger Unmute Bar
+// @version 5.1.1
+// @description v4.8.2 Stable Core + Surgical Icon Detection for /results
 // @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
@@ -12,16 +12,18 @@
 (function() {
     'use strict';
 
-    let lastTapTime = 0;
+    let userWantsUnmute = false; 
+    let activeSrc = ""; 
+    let forceResumeTimer = null;
     let isNavigating = false;
 
-    // --- 1. NAVIGATION STABILIZER ---
+    // --- 1. STABLE NAVIGATION (v4.8.2) ---
     window.addEventListener('popstate', () => {
         isNavigating = true;
         setTimeout(() => { isNavigating = false; }, 1200);
     });
 
-    // --- 2. NUCLEAR RELOAD (Ad Purge) ---
+    // --- 2. STABLE NUCLEAR RELOAD (v4.8.2) ---
     const nuclearReload = () => {
         if (isNavigating) return;
         const currentUrl = new URL(window.location.href);
@@ -30,7 +32,7 @@
         window.location.replace(currentUrl.toString());
     };
 
-    // --- 3. DATA PREDATOR ---
+    // --- 3. STABLE DATA PREDATOR (v4.8.2) ---
     const predator = new MutationObserver((mutations) => {
         for (let i = 0; i < mutations.length; i++) {
             const nodes = mutations[i].addedNodes;
@@ -44,7 +46,7 @@
     });
     predator.observe(document.documentElement, { childList: true, subtree: true });
 
-    // --- 4. THE UI SHIELD (Strictly for /results) ---
+    // --- 4. THE UI SHIELD (Strictly isolated to /results) ---
     const shield = document.createElement('div');
     Object.assign(shield.style, {
         position: 'fixed', left: '0', bottom: '0', width: '100vw', height: '100px',
@@ -55,58 +57,56 @@
     Object.assign(visualBar.style, {
         position: 'absolute', inset: '0', backgroundColor: '#0f0f0f', color: '#ffffff',
         textAlign: 'center', lineHeight: '100px', fontSize: '18px', fontWeight: 'bold',
-        fontFamily: 'sans-serif', borderTop: '1px solid #333'
+        fontFamily: 'sans-serif', borderTop: '1px solid #333', pointerEvents: 'none'
     });
     visualBar.innerText = 'TAP TO UNMUTE SEARCH RESULT';
     shield.appendChild(visualBar);
     document.body.appendChild(shield);
 
-    // --- 5. THE UNMUTE ACTIVATOR ---
+    // --- 5. STABLE RESUME HAMMER (v4.8.2) ---
+    const startForceResume = (videos) => {
+        if (forceResumeTimer) clearInterval(forceResumeTimer);
+        let attempts = 0;
+        forceResumeTimer = setInterval(() => {
+            videos.forEach(v => {
+                if (v.muted || v.paused) {
+                    v.muted = false;
+                    v.volume = 1.0;
+                    v.play().catch(() => {});
+                }
+            });
+            if (++attempts > 50) clearInterval(forceResumeTimer);
+        }, 10); // Kept at 10ms as per stable version
+    };
+
     shield.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        const videos = document.querySelectorAll('video');
-        videos.forEach(v => {
-            v.muted = false;
-            v.volume = 1.0;
-            v.play().catch(() => {});
-        });
-        lastTapTime = Date.now();
-        shield.style.display = 'none';
+        userWantsUnmute = true;
     }, { capture: true, passive: false });
 
-    // --- 6. SMART DETECTION LOOP ---
+    // --- 6. ISOLATED SEARCH DETECTION LOOP ---
     setInterval(() => {
         const path = window.location.pathname;
-        if (!path.startsWith('/results')) {
-            shield.style.display = 'none';
-            return;
-        }
-
-        const adShowing = !!document.querySelector('.ad-showing');
-        if (adShowing && !isNavigating) { nuclearReload(); return; }
-
-        // COOLDOWN: Don't show immediately after a tap
-        if (Date.now() - lastTapTime < 3000) return;
-
-        // --- ICON DETECTION LOGIC ---
-        // We search for YouTube's native "Muted" icon (Speaker with X / Mute Overlay)
-        // Usually found in ytm-muted-autoplay-status-renderer or similar paths
-        const muteIcons = document.querySelectorAll('ytm-muted-autoplay-status-renderer, .Muted, [aria-label*="unmute"], .icon-button[aria-pressed="false"]');
+        const isSearch = path.startsWith('/results');
+        const videos = document.querySelectorAll('video');
         
-        let shouldShowBar = false;
-        muteIcons.forEach(icon => {
-            const rect = icon.getBoundingClientRect();
-            // If the icon is visible on screen, it means the video is "Audio Receivable" but muted
-            if (rect.top > 0 && rect.bottom < window.innerHeight) {
-                shouldShowBar = true;
-            }
-        });
+        // SURGICAL ICON DETECTION:
+        // We look for the specific "Mute" renderer YouTube uses for unmutable feed videos
+        const unmuteIconVisible = !!document.querySelector('ytm-muted-autoplay-status-renderer') || 
+                                 !!document.querySelector('.ytm-autonav-toggle-button') ||
+                                 !!document.querySelector('[aria-label*="unmute"]');
 
-        if (shouldShowBar) {
+        if (isSearch && unmuteIconVisible && videos.length > 0 && !userWantsUnmute) {
             shield.style.display = 'block';
         } else {
             shield.style.display = 'none';
         }
 
-    }, 100);
+        if (userWantsUnmute) {
+            startForceResume(videos);
+            userWantsUnmute = false;
+            // Temporary hide to allow playback to settle
+            setTimeout(() => { userWantsUnmute = false; }, 2000);
+        }
+    }, 50);
 })();
