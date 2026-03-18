@@ -3,7 +3,7 @@
 // @namespace https://viayoo.com/
 // @version 3.0
 // @description Total Data Blockade + Mutation-Level Image Killing
-// @author You
+// @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
 // @grant none
