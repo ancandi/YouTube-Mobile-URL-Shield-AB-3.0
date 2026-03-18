@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name YouTube Mobile URL Shield AB+
 // @namespace http://tampermonkey.com/
-// @version 3.5
-// @description Optimized Data Blockade + /watch Pause Fix
+// @version 3.6
+// @description Optimized Data Blockade + Instant Tap Fix
 // @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
@@ -43,11 +43,12 @@
         }).observe(document.documentElement, { childList: true, subtree: true });
     }
 
-    // 3. THE SHIELD
+    // 3. THE SHIELD (Unified Logic)
     const shield = document.createElement('div');
     Object.assign(shield.style, {
         position: 'fixed', left: '0', width: '100vw', zIndex: '2147483647', 
-        display: 'none', cursor: 'pointer', touchAction: 'none'
+        display: 'none', cursor: 'pointer', 
+        touchAction: 'manipulation' // FIX: Disables double-tap delay for instant resume
     });
 
     const bar = document.createElement('div');
@@ -55,7 +56,8 @@
         position: 'absolute', bottom: '0', width: '100%', height: '100px',
         backgroundColor: '#fff', color: '#000', display: 'flex',
         alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-        fontWeight: 'bold', fontFamily: 'sans-serif', boxShadow: '0 -10px 20px rgba(0,0,0,0.3)'
+        fontWeight: 'bold', fontFamily: 'sans-serif', boxShadow: '0 -10px 20px rgba(0,0,0,0.3)',
+        pointerEvents: 'auto' // Bar catches the tap
     });
     bar.innerText = 'TAP TO UNMUTE';
     shield.appendChild(bar);
@@ -65,7 +67,6 @@
     const unmute = (e) => {
         if (e) { 
             e.preventDefault(); 
-            e.stopPropagation();
             e.stopImmediatePropagation(); 
         }
         
@@ -75,23 +76,17 @@
             v.muted = false;
             v.volume = 1.0;
             
-            // Optimization: Double-tap play to override YT's pause-on-click logic
-            const playVideo = () => {
-                v.play().catch(() => {
-                    v.muted = false;
-                    v.play();
-                });
-            };
-            
-            playVideo();
-            // Micro-delay to catch YT's accidental pause toggle
-            setTimeout(playVideo, 50); 
+            // Force play immediately
+            const p = v.play();
+            if (p !== undefined) {
+                p.catch(() => { v.play(); });
+            }
         }
         shield.style.display = 'none';
         return false;
     };
 
-    // Capture at the highest level to prevent bubbling to YT Player
+    // Use touchstart for lowest latency
     shield.addEventListener('touchstart', unmute, { capture: true, passive: false });
     shield.addEventListener('click', unmute, { capture: true });
 
@@ -113,24 +108,28 @@
         const watch = window.location.pathname.startsWith('/watch');
         const v = document.querySelector('video');
 
+        // Layout: Watch is full-screen shield, but Tap Zone is ALWAYS the bottom bar
         if (watch) {
             shield.style.top = '0'; shield.style.height = '100vh';
+            shield.style.backgroundColor = 'rgba(0,0,0,0.001)'; // Invisible but present
             monKill();
         } else {
             shield.style.top = 'auto'; shield.style.bottom = '0'; shield.style.height = '100px';
+            shield.style.backgroundColor = 'transparent';
             sessionStorage.removeItem('yt-ad-reload-active');
         }
 
         if (!v || trig) { shield.style.display = 'none'; return; }
         if (v.src !== activeSrc) activeSrc = "";
 
+        // UI Clean
         if (!document.querySelector('.ad-showing') && sessionStorage.getItem('yt-ad-reload-active') === 'true') {
             sessionStorage.removeItem('yt-ad-reload-active');
             const s = document.getElementById('yt-hard-blocker');
             if (s) s.remove();
         }
 
-        // Logical Check: Only show if muted and we haven't unmuted THIS specific src yet
+        // Logical Check
         if (v.muted && !document.querySelector('.ad-showing') && !activeSrc) {
             if (!shield.parentElement) document.body.appendChild(shield);
             shield.style.display = 'flex';
