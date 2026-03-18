@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name YouTube Mobile URL Shield AB+
 // @namespace http://tampermonkey.com/
-// @version 3.6
-// @description Optimized Data Blockade + Instant Tap Fix
+// @version 3.8
+// @description Split Logic: Native /watch Unmute + Custom Home Shield
 // @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
@@ -43,12 +43,11 @@
         }).observe(document.documentElement, { childList: true, subtree: true });
     }
 
-    // 3. THE SHIELD (Unified Logic)
+    // 3. THE SHIELD
     const shield = document.createElement('div');
     Object.assign(shield.style, {
         position: 'fixed', left: '0', width: '100vw', zIndex: '2147483647', 
-        display: 'none', cursor: 'pointer', 
-        touchAction: 'manipulation' // FIX: Disables double-tap delay for instant resume
+        display: 'none', cursor: 'pointer', touchAction: 'manipulation'
     });
 
     const bar = document.createElement('div');
@@ -56,39 +55,31 @@
         position: 'absolute', bottom: '0', width: '100%', height: '100px',
         backgroundColor: '#fff', color: '#000', display: 'flex',
         alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-        fontWeight: 'bold', fontFamily: 'sans-serif', boxShadow: '0 -10px 20px rgba(0,0,0,0.3)',
-        pointerEvents: 'auto' // Bar catches the tap
+        fontWeight: 'bold', fontFamily: 'sans-serif', boxShadow: '0 -10px 20px rgba(0,0,0,0.3)'
     });
     bar.innerText = 'TAP TO UNMUTE';
     shield.appendChild(bar);
 
     let activeSrc = "";
 
-    const unmute = (e) => {
-        if (e) { 
-            e.preventDefault(); 
-            e.stopImmediatePropagation(); 
-        }
-        
-        const v = document.querySelector('video');
-        if (v) {
+    const unmuteHome = (e) => {
+        // Only run custom unmute logic if NOT on /watch
+        if (window.location.pathname.startsWith('/watch')) return;
+
+        if (e) { e.preventDefault(); e.stopImmediatePropagation(); }
+        const videos = document.querySelectorAll('video');
+        videos.forEach(v => {
             activeSrc = v.src;
             v.muted = false;
             v.volume = 1.0;
-            
-            // Force play immediately
-            const p = v.play();
-            if (p !== undefined) {
-                p.catch(() => { v.play(); });
-            }
-        }
+            v.play().catch(() => v.play());
+        });
         shield.style.display = 'none';
         return false;
     };
 
-    // Use touchstart for lowest latency
-    shield.addEventListener('touchstart', unmute, { capture: true, passive: false });
-    shield.addEventListener('click', unmute, { capture: true });
+    shield.addEventListener('touchstart', unmuteHome, { capture: true, passive: false });
+    shield.addEventListener('click', unmuteHome, { capture: true });
 
     // 4. MONETIZATION KILL
     let trig = false;
@@ -105,32 +96,46 @@
 
     // 5. MAINTENANCE (5ms Polling)
     setInterval(() => {
-        const watch = window.location.pathname.startsWith('/watch');
-        const v = document.querySelector('video');
+        const isWatch = window.location.pathname.startsWith('/watch');
+        const videos = document.querySelectorAll('video');
+        let mutedFound = false;
 
-        // Layout: Watch is full-screen shield, but Tap Zone is ALWAYS the bottom bar
-        if (watch) {
-            shield.style.top = '0'; shield.style.height = '100vh';
-            shield.style.backgroundColor = 'rgba(0,0,0,0.001)'; // Invisible but present
+        if (isWatch) {
+            // /watch logic: Full screen but NO pointer events on the shield itself
+            // This lets the tap hit the YouTube player directly to unmute without pausing.
+            shield.style.top = '0'; 
+            shield.style.height = '100vh';
+            shield.style.pointerEvents = 'none'; 
+            bar.style.display = 'none'; // Hide bar on watch to use native UI
             monKill();
         } else {
-            shield.style.top = 'auto'; shield.style.bottom = '0'; shield.style.height = '100px';
-            shield.style.backgroundColor = 'transparent';
+            // Homepage logic: Bottom bar is clickable, rest of screen is free
+            shield.style.top = 'auto'; 
+            shield.style.bottom = '0'; 
+            shield.style.height = '100px';
+            shield.style.pointerEvents = 'auto';
+            bar.style.display = 'flex';
             sessionStorage.removeItem('yt-ad-reload-active');
         }
 
-        if (!v || trig) { shield.style.display = 'none'; return; }
-        if (v.src !== activeSrc) activeSrc = "";
+        videos.forEach(v => {
+            if (v.muted && v.src !== activeSrc && !document.querySelector('.ad-showing')) {
+                mutedFound = true;
+            }
+            if (v.src !== activeSrc && activeSrc !== "") {
+                activeSrc = "";
+            }
+        });
 
-        // UI Clean
+        if (trig || videos.length === 0) { shield.style.display = 'none'; return; }
+
         if (!document.querySelector('.ad-showing') && sessionStorage.getItem('yt-ad-reload-active') === 'true') {
             sessionStorage.removeItem('yt-ad-reload-active');
             const s = document.getElementById('yt-hard-blocker');
             if (s) s.remove();
         }
 
-        // Logical Check
-        if (v.muted && !document.querySelector('.ad-showing') && !activeSrc) {
+        if (mutedFound) {
             if (!shield.parentElement) document.body.appendChild(shield);
             shield.style.display = 'flex';
         } else {
