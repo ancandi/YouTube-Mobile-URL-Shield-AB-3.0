@@ -39,6 +39,9 @@ URL Shield offers a different path to achieving uninteruppted mobile youtube bro
 - Fixes interruptions and delays
 - Uses a unique method to bypass monetization interruptions via the "front end"
 
+## ⚙️ Other Utility Extensions
+- You might want to try out other userscript utilities available on both Mobile/Desktop such as: (skipped.lol).
+  
 <br>
 
 ## ⚡️ How is this shield protection script different?
