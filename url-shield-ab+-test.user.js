@@ -7,7 +7,7 @@
 
 (function() {
     'use strict';
-    let u = false, l = false;
+    let u = false, l = false, gC = 0; 
     const d = document, w = window, sh = d.createElement('div'), br = d.createElement('div'), hi = d.createElement('div'), tb = d.createElement('div');
 
     const update = () => {
@@ -24,7 +24,7 @@
     };
 
     new MutationObserver(() => {
-        if (d.querySelector('.ad-showing')) location.replace(location.href + (location.href.includes('?') ? '&' : '?') + 'r=' + Date.now());
+        if (d.querySelector('.ad-showing')) location.replace(location.href.split('&r=')[0] + (location.href.includes('?') ? '&' : '?') + 'r=' + Date.now());
     }).observe(d.documentElement, { childList: true, subtree: true });
 
     br.innerText = 'TAP TO UNMUTE'; hi.innerText = 'HIDE';
@@ -40,6 +40,13 @@
 
     setInterval(() => {
         const path = location.pathname, isW = path.startsWith('/watch'), isS = path.startsWith('/results'), act = d.activeElement;
+
+        // SILENT GHOST FIX: If video exists but is dead (readyState 0) on a /watch page
+        let vRef = d.querySelector('video');
+        if (isW && vRef && vRef.readyState === 0) {
+            if (++gC > 40) { w.history.replaceState(null, '', location.href); w.dispatchEvent(new PopStateEvent('popstate')); gC = 0; return; }
+        } else gC = 0;
+
         sh.style.pointerEvents = isW ? 'auto' : 'none';
         br.style.pointerEvents = isW ? 'none' : 'auto';
         if (!isS && l) l = false;
