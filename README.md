@@ -8,6 +8,7 @@ URL Shield offers a different path to achieving uninteruppted mobile youtube bro
 ## Get it from the Chrome Web Store (test.js):
 [Youtube Mobile URL Shield AB+ – JavaScript](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test.user.js)
 
+> `Old Link [v3.0.3]`: [v3.0.3](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test.user.js)
 <br>
 
 ## 🦊 Get it for Firefox (test.js):
