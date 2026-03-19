@@ -1,5 +1,5 @@
-//UserScriptipt==
-// @naYouTubeube Mobile URL Shield AB+ Click-Targeted
+// ==UserScript==
+// @name YouTube Mobile URL Shield AB+ Live-Video-Check
 // @namespace http://tampermonkey.com/
 // @version 3.0.3
 // @description UI Detection Dark/Light Detection
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    let userWantsUnmute = false, activeSrc = "", sessionLocked = false;
+    let userWantsUnmute = false, sessionLocked = false;
 
     // --- 1. CORE ENGINE ---
     const predator = new MutationObserver((mutations) => {
@@ -38,13 +38,11 @@
     visualBar.innerText = 'TAP TO UNMUTE';
     dismissBtn.innerText = 'HIDE';
 
-    // Container: pointer-events: none makes the invisible part click-through
     Object.assign(shield.style, { 
         position: 'fixed', left: '0', top: '0', width: '100vw', height: '100vh', 
         zIndex: '2147483647', display: 'none', pointerEvents: 'none' 
     });
 
-    // Sub-elements: pointer-events: auto makes ONLY these parts clickable
     Object.assign(visualBar.style, {
         position: 'absolute', bottom: '0', left: '0', width: '100%', height: '100px',
         backdropFilter: 'blur(4px)', webkitBackdropFilter: 'blur(4px)',
@@ -58,7 +56,6 @@
         borderRadius: '10px 10px 0 0', zIndex: '2147483647', display: 'none', pointerEvents: 'auto'
     });
 
-    // Folder Tab: zIndex 0 + pointerEvents auto
     Object.assign(resurrectTab.style, {
         position: 'fixed', bottom: '40px', right: '20px', width: '70px', height: '45px',
         backdropFilter: 'blur(4px)', webkitBackdropFilter: 'blur(4px)',
@@ -102,8 +99,6 @@
         updateTheme();
         const path = window.location.pathname;
         const isSearch = path.startsWith('/results');
-        const isWatch = path.startsWith('/watch');
-
         const active = document.activeElement;
         const isTyping = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
         const sidebarOpen = !!document.querySelector('ytm-browse-sidebar-renderer[opened], .ytm-sidebar-open');
@@ -119,16 +114,19 @@
             resurrectTab.style.display = 'block';
         } else {
             resurrectTab.style.display = 'none';
+            
+            // CHECK: Is there a video currently playing that is muted?
             const vids = document.querySelectorAll('video');
-            let anyUnmuted = false;
-            vids.forEach(v => { if (v.src && !v.muted) anyUnmuted = true; });
+            let videoNeedsUnmute = false;
 
-            let needsShield = isWatch ? !anyUnmuted : false;
-            if (!isWatch) {
-                vids.forEach(v => { if (v.muted && v.src && v.src !== activeSrc) needsShield = true; });
-            }
+            vids.forEach(v => {
+                // If video has a source, is not paused, and is muted
+                if (v.src && !v.paused && v.muted) {
+                    videoNeedsUnmute = true;
+                }
+            });
 
-            if (needsShield || userWantsUnmute) {
+            if (videoNeedsUnmute || userWantsUnmute) {
                 if (!shield.parentElement) document.body.appendChild(shield);
                 shield.style.display = 'block';
 
@@ -146,11 +144,12 @@
         if (userWantsUnmute && !sessionLocked) {
             document.querySelectorAll('video').forEach(v => {
                 if (v.src && v.readyState >= 1) {
-                    v.muted = false; v.volume = 1.0;
+                    v.muted = false; 
+                    v.volume = 1.0;
                     if (v.paused) v.play();
-                    if (!v.muted) { activeSrc = v.src; userWantsUnmute = false; }
+                    userWantsUnmute = false;
                 }
             });
         }
     }, 40);
-})();       
+})();
