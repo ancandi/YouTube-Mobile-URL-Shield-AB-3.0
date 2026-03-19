@@ -22,16 +22,10 @@
     sh.appendChild(br);
 
     const update = () => {
-        // Optimized Theme Detection: Prioritize System Media Query + YT Attributes
         const isD = w.matchMedia('(prefers-color-scheme: dark)').matches || d.documentElement.hasAttribute('dark') || (d.body && d.body.classList.contains('ytm-dark-mode'));
         const c = isD ? ['#fff', '#111', '#333', 'rgba(15,15,15,0.9)'] : ['#0f0f0f', '#fff', '#e5e5e5', 'rgba(255,255,255,0.9)'];
-        
-        br.style.background = c[3];
-        br.style.color = c[0]; 
-        br.style.borderTop = `1px solid ${c[2]}`;
-        hi.style.background = c[0]; 
-        hi.style.color = c[1]; 
-        hi.style.border = `1px solid ${c[2]}`;
+        br.style.background = c[3]; br.style.color = c[0]; br.style.borderTop = `1px solid ${c[2]}`;
+        hi.style.background = c[0]; hi.style.color = c[1]; hi.style.border = `1px solid ${c[2]}`;
         tb.style.background = isD ? 'rgba(28,28,28,0.75)' : 'rgba(240,240,240,0.75)';
         tb.style.border = `1px solid rgba(${isD?'255,255,255':'0,0,0'},0.1)`;
     };
@@ -46,40 +40,30 @@
 
     setInterval(() => {
         const p = location.pathname, isW = p.startsWith('/watch'), isS = p.startsWith('/results'), act = d.activeElement;
-        
         if (isS && !d.querySelector('ytm-search')) return (sh.style.display = hi.style.display = tb.style.display = 'none');
-
         let v = d.querySelector('video');
         if (isW && v && v.readyState === 0) {
             if (++gC > 40) { w.history.replaceState(null, '', location.href); w.dispatchEvent(new PopStateEvent('popstate')); gC = 0; }
         } else gC = 0;
-
         if (!isS && !isW && l) l = false;
         if (isS && hS) l = true;
-
         if ((act && /INPUT|TEXTAREA/.test(act.tagName)) || d.querySelector('.ytm-sidebar-open')) {
             sh.style.display = hi.style.display = tb.style.display = 'none'; return;
         }
-
         update();
         sh.style.pointerEvents = isW ? 'auto' : 'none';
         br.style.pointerEvents = isW ? 'none' : 'auto';
-
         if (l && isS) {
-            sh.style.display = hi.style.display = 'none'; 
-            if (!tb.parentNode) d.body.appendChild(tb); 
-            tb.style.display = 'block';
+            sh.style.display = hi.style.display = 'none'; if (!tb.parentNode) d.body.appendChild(tb); tb.style.display = 'block';
         } else {
             tb.style.display = 'none';
             let n = false, vs = d.getElementsByTagName('video');
             for (let i=0; i<vs.length; i++) if (vs[i].src && !vs[i].paused && vs[i].muted) { n = true; break; }
-            
             if (n || u) {
                 if (!sh.parentNode) d.body.appendChild(sh); sh.style.display = 'block';
                 if (isS && !l) { if (!hi.parentNode) d.body.appendChild(hi); hi.style.display = 'block'; } else hi.style.display = 'none';
             } else sh.style.display = hi.style.display = 'none';
         }
-
         if (u && !l) {
             let vs = d.getElementsByTagName('video');
             for (let i=0; i<vs.length; i++) if (vs[i].readyState >= 1) { vs[i].muted = false; vs[i].volume = 1; vs[i].play(); }
