@@ -68,6 +68,7 @@ To make this seamless, we provided a "Tap to Unmute" zone at the bottom of the s
 If you have ideas for better data blockade, or want UI improvements like customizing and bringing the tap to unmute to any playing video, I’d love for you to contribute in any way. Please reach out by opening a new issue!
 
 >**`Experimental Build`** (optimized, but may not work on some devices): [v3.0.4](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test.user.js)
+>**`Volatile (experiments, check the script name before applying)`**: [v4.0.0](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta.user.js)
 
 <br>
 
