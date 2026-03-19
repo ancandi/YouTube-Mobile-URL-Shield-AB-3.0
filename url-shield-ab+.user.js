@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name YouTube Mobile URL Shield AB+ Theme-Locked
 // @namespace http://tampermonkey.com/
-// @version 3.0.2
-// @description UI Recovery + Independent Unmute Enforcer
+// @version 3.0.3
+// @description UI Robust Dark/Light Detection
 // @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
