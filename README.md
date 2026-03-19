@@ -69,7 +69,7 @@ If you have ideas for better data blockade, or want UI improvements like customi
 
 >**`Experimental Build`** (optimized, but may not work on some devices): [v3.0.4](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test.user.js)
 
->**`Volatile (experiments, check the script name before applying)`**: [v4.0.0](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta.user.js)
+>**`Volatile`** (experiments, check the script name before applying): [v4.0.0](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta.user.js)
 
 <br>
 
