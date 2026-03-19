@@ -12,11 +12,13 @@
 
     const update = () => {
         const dark = d.documentElement.hasAttribute('dark') || d.body.classList.contains('ytm-dark-mode') || w.matchMedia('(prefers-color-scheme: dark)').matches;
+        const bCol = dark ? '#333' : '#ccc';
         br.style.background = dark ? 'rgba(15,15,15,0.9)' : 'rgba(255,255,255,0.9)';
-        br.style.color = dark ? '#fff' : '#0f0f0f';
-        br.style.borderTop = `1px solid ${dark ? '#333' : '#e5e5e5'}`;
-        hi.style.background = dark ? '#fff' : '#0f0f0f';
+        br.style.color = dark ? '#fff' : '#000';
+        br.style.borderTop = `2px solid ${bCol}`;
+        hi.style.background = dark ? '#fff' : '#000';
         hi.style.color = dark ? '#000' : '#fff';
+        hi.style.border = `1px solid ${bCol}`;
         tb.style.background = dark ? 'rgba(28,28,28,0.75)' : 'rgba(240,240,240,0.75)';
         tb.style.border = `1px solid rgba(${dark ? '255,255,255' : '0,0,0'},0.1)`;
     };
@@ -27,8 +29,8 @@
 
     br.innerText = 'TAP TO UNMUTE'; hi.innerText = 'HIDE';
     Object.assign(sh.style, { position: 'fixed', inset: '0', zIndex: '2147483647', display: 'none', pointerEvents: 'none' });
-    Object.assign(br.style, { position: 'absolute', bottom: '0', width: '100%', height: '100px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'auto', backdropFilter: 'blur(8px)', webkitBackdropFilter: 'blur(8px)' });
-    Object.assign(hi.style, { position: 'fixed', bottom: '100px', left: '15px', width: '60px', height: '40px', textAlign: 'center', lineHeight: '40px', borderRadius: '10px 10px 0 0', zIndex: '2147483647', display: 'none', pointerEvents: 'auto' });
+    Object.assign(br.style, { position: 'absolute', bottom: '0', width: '100%', height: '100px', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', pointerEvents: 'auto', backdropFilter: 'blur(8px)', webkitBackdropFilter: 'blur(8px)' });
+    Object.assign(hi.style, { position: 'fixed', bottom: '100px', left: '15px', width: '65px', height: '42px', textAlign: 'center', lineHeight: '42px', borderRadius: '12px 12px 0 0', zIndex: '2147483647', fontWeight: 'bold', fontSize: '13px', display: 'none', pointerEvents: 'auto' });
     Object.assign(tb.style, { position: 'fixed', bottom: '40px', right: '20px', width: '70px', height: '45px', borderRadius: '12px', zIndex: '0', display: 'none', pointerEvents: 'auto', backdropFilter: 'blur(8px)', webkitBackdropFilter: 'blur(8px)' });
 
     sh.appendChild(br);
