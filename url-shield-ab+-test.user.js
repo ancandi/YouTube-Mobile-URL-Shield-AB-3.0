@@ -33,18 +33,21 @@
     const precisionKill = () => {
         if (!location.pathname.startsWith('/shorts')) return;
 
-        const hasAdUI = d.querySelector('button[aria-label*="ad"], .ytm-reel-ad-header-renderer, .ytm-ad-overlay-endpoint');
-        const hasPaidText = d.body.innerText.includes("This is a paid ad") || d.body.innerText.includes("Sponsored");
+        const activeReel = d.querySelector('ytm-reel-item-renderer[aria-hidden="false"], .reel-video-in-view');
+        if (!activeReel) return;
+
+        const hasAdUI = activeReel.querySelector('button[aria-label*="ad"], .ytm-reel-ad-header-renderer, .ytm-ad-overlay-endpoint');
+        const hasPaidText = activeReel.innerText.includes("This is a paid ad") || activeReel.innerText.includes("Sponsored");
 
         if (hasAdUI || hasPaidText) {
-            d.querySelectorAll('video').forEach(v => {
-                if (v.src && v.src !== "") {
-                    v.pause();
-                    v.removeAttribute('src');
-                    v.load();
-                }
-            });
-            
+            const v = activeReel.querySelector('video');
+            if (v && v.src) {
+                v.pause();
+                v.removeAttribute('src');
+                v.load();
+            }
+
+            // TRIGGER NEXT
             const next = d.querySelector('button[aria-label="Next video"]');
             if (next) next.click();
             else {
