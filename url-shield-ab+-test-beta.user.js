@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name YouTube Mobile URL Shield AB+ Zero-Logic-Theme
+// @name YouTube Mobile URL Shield AB+ CSS-Emulation
 // @namespace http://tampermonkey.com/
-// @version 6.5.6
-// @description v6.5.4 Base. Deleted JS Theme Engine. Uses System CSS for Zero CPU overhead.
+// @version 6.5.7
+// @description v6.5.4 Base. 1-to-1 CSS Emulation of JS Theme Engine for Via Browser.
 // @author ancandi
 // @run-at document-start
 // @match https://*.youtube.com/*
@@ -14,20 +14,44 @@
 
     let userWantsUnmute = false, sessionLocked = false;
 
-    // --- 1. SYSTEM CSS INJECTION (Zero CPU Usage) ---
+    // --- 1. CSS EMULATION (1-to-1 Color Mapping) ---
     const style = document.createElement('style');
     style.textContent = `
-        :root { --shield-bg: rgba(255, 255, 255, 0.98); --shield-txt: #0f0f0f; --shield-brd: #e5e5e5; --tab-bg: rgba(240, 240, 240, 0.75); }
-        @media (prefers-color-scheme: dark) {
-            :root { --shield-bg: rgba(15, 15, 15, 0.98); --shield-txt: #ffffff; --shield-brd: #333; --tab-bg: rgba(28, 28, 28, 0.75); }
+        /* LIGHT MODE DEFAULT */
+        .shield-bar { 
+            background-color: rgba(255, 255, 255, 0.98) !important; 
+            color: #0f0f0f !important; 
+            border-top: 1px solid #e5e5e5 !important; 
         }
-        .shield-bar { background: var(--shield-bg) !important; color: var(--shield-txt) !important; border-top: 1px solid var(--shield-brd) !important; }
-        .shield-btn { background: var(--shield-txt) !important; color: var(--shield-bg) !important; }
-        .shield-tab { background: var(--tab-bg) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
+        .shield-btn { 
+            background-color: rgba(15, 15, 15, 0.98) !important; 
+            color: #ffffff !important; 
+        }
+        .shield-tab { 
+            background-color: rgba(240, 240, 240, 0.75) !important; 
+            border: 1px solid rgba(0, 0, 0, 0.1) !important; 
+        }
+
+        /* DARK MODE OVERRIDE (System/Android Triggered) */
+        @media (prefers-color-scheme: dark) {
+            .shield-bar { 
+                background-color: rgba(15, 15, 15, 0.98) !important; 
+                color: #ffffff !important; 
+                border-top: 1px solid #333 !important; 
+            }
+            .shield-btn { 
+                background-color: rgba(255, 255, 255, 0.98) !important; 
+                color: #000000 !important; 
+            }
+            .shield-tab { 
+                background-color: rgba(28, 28, 28, 0.75) !important; 
+                border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            }
+        }
     `;
     document.head.appendChild(style);
 
-    // --- 2. CORE ENGINE ---
+    // --- 2. CORE ENGINE (Ad Nuclear) ---
     const predator = new MutationObserver(() => {
         if (document.querySelector('.ad-showing')) {
             window.location.replace(window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'reload_ts=' + Date.now());
@@ -35,7 +59,7 @@
     });
     predator.observe(document.documentElement, { childList: true, subtree: true });
 
-    // --- 3. UI STACK (Logic from v6.5.4) ---
+    // --- 3. UI STACK ---
     const shield = document.createElement('div'),
           visualBar = document.createElement('div'),
           dismissBtn = document.createElement('div'),
@@ -58,7 +82,7 @@
     resurrectTab.addEventListener('touchstart', (e) => handleTouch(e, false));
     shield.addEventListener('touchstart', () => { if(!sessionLocked) userWantsUnmute = true; });
 
-    // --- 5. MAINTENANCE LOOP ---
+    // --- 5. MAINTENANCE LOOP (Standard Logic) ---
     setInterval(() => {
         const path = window.location.pathname;
         const isSearch = path.startsWith('/results');
