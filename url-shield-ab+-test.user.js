@@ -30,7 +30,6 @@
         tb.style.border = `1px solid rgba(${isD?'255,255,255':'0,0,0'},0.1)`;
     };
 
-    // LEAN SHORTS AD-KILL (Targeted via screenshot markers)
     const scrub = () => {
         if (!location.pathname.startsWith('/shorts')) return;
         if (d.querySelector('button[aria-label*="ad"], .ytm-reel-ad-header-renderer') || d.body.innerText.includes("This is a paid ad")) {
