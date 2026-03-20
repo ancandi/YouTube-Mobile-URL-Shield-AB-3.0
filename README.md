@@ -6,16 +6,12 @@ URL Shield offers a different path to achieving uninteruppted mobile youtube bro
 <br>
 
 ## Get it from the Chrome Web Store (test.js):
-[Youtube Mobile URL Shield AB+ – JavaScript](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test.user.js)
-
-> `Old Link [v3.0.3]`: [v3.0.3](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+.user.js)
+[Youtube Mobile URL Shield AB+ – JavaScript](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/main/url-shield-ab+-latest.user.js)
 <br>
 
 ## 🦊 Get it for Firefox (test.js):
-[Youtube Mobile URL Shield AB+ – JavaScript](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test.user.js)
+[Youtube Mobile URL Shield AB+ – JavaScript](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/main/url-shield-ab+-latest.user.js)
 
-
-> `Old Link [v3.0.3]`: [v3.0.3](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+.user.js)
 <br>
 
 ## 🛠️ How to use the Beta
@@ -69,8 +65,6 @@ To make this seamless, we provided a "Tap to Unmute" zone at the bottom of the s
 
 ## This project is a work in progress. 
 If you have ideas for better data blockade, or want UI improvements like customizing and bringing the tap to unmute to any playing video, I’d love for you to contribute in any way. Please reach out by opening a new issue!
-
->**`Experimental Build`**: [v3.0.5](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test.user.js)
 
 >**`Volatile`** (experiments, this removes all 'Tap To Unmute' UI, auto-unmutes, and removes all errors): [v4.0.0](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta.user.js)
 
