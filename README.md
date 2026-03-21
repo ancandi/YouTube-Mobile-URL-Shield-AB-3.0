@@ -41,13 +41,44 @@ URL Shield offers a different path to achieving uninteruppted mobile YouTube bro
 
 <br>
 
+# FAQ
+
+<br>
+
+## ⚡️ How is this shield protection script different?
+
+- Traditional blockers rely on **`brittle Filter Lists`** or **`video player black-outs`** that require constant updates, not very functional and are easily detected. URL Shield AB+ utilizes **`Behavioral Monitoring`**. By tracking the video player’s state in real-time, it executes a granular **`page-state`** reset that bypasses interruptions at the source. This method is structurally undetectable and independent of YouTube’s shifting code.
+  
+- An **`"Unmute" zone`** is also added after reloads to make YouTube browsing accessibility-friendly. Additionally, it prevents data consumption by not allowing normally downloaded elements, making this data-seamless.
+  
+Current Patch Notes `[v3.0.6]`:
+- Neutralizes monetization-slot renderers and media streams before they can consume mobile data.
+- rAF Sync Engine: Leverages requestAnimationFrame for stutter-free UI and zero CPU overhead when possible.
+- Touch Zone Accessibility: Touch zones meant for instant, reliable audio restoration.
+<br>
+
+## 💎 How is this free?
+URL Shield AB+ is 100% free for personal use. Unlike other extensions that offer "7-day trials" or subscriptions, this userscript is provided as an open-source tool for the community. There are no hidden fees, no "Pro" versions, and no tiers.
+
+<br>
+
+## 📱 Why the Manual Unmute?
+Modern mobile browsers (Chrome/Safari) enforce a Strict Gesture Requirement. Audio cannot play automatically after a page state reset without a physical user interaction. 
+
+URL Shield AB+ provides an optimized "Tap Zone" to satisfy this security handshake instantly, ensuring your autoplay continues without a permanent mute. You may need to repeat this over several videos to maintain video player functionality after YouTube monetization. 
+
+## This project is a work in progress. 
+If you have ideas for better data blockade, or want UI improvements like customizing and bringing the tap to unmute to any playing video, I’d love for you to contribute in any way. Please reach out by opening a new issue!
+
+>**`Volatile Build`** (Auto-Unmute, No UI, Less Errors): [v4.0.1](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta.user.js)            |            [v4.0.1 Safari](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta-safari.user.js)
+<br>
+
 ## 🔍 Looking for more?
 
 <img width="200" height="500" alt="image" src="https://github.com/user-attachments/assets/ea1f8205-4a4a-49f3-9eae-7b6e3d35873f" />
+`Major Public Userscripts Listed above. Try out other public userscript utilities: **[Evade - Link Bypasser](https://skipped.lol/)**`
 
-- Looking for more? Try out other userscript utilities: [Evade - Link Bypasser](https://skipped.lol/)
-
-### This is the complete collection of high-performance, ultra-lean userscripts designed to reclaim control over mobile web experiences. ⬇
+## AND1 UserScripts — This is the complete collection of high-performance, streamlined userscripts designed to reclaim control over mobile web experiences. ⬇
 > Otherwise, check out the full source code and technical documentation at **[github.com/ancandi](https://github.com/ancandi)**.
 
 ---
@@ -84,40 +115,6 @@ Prevents aggressive "Forced Dark Mode" on mobile browsers from breaking specific
     * [Safari Build (WebKit)](https://github.com/ancandi/Night-Mode-Disabler-Whitelist-M/raw/main/night-mode-disabler-safari.user.js)
       
 ---
-
-<br>
-
-# FAQ
-
-<br>
-
-## ⚡️ How is this shield protection script different?
-
-- Traditional blockers rely on **`brittle Filter Lists`** or **`video player black-outs`** that require constant updates, not very functional and are easily detected. URL Shield AB+ utilizes **`Behavioral Monitoring`**. By tracking the video player’s state in real-time, it executes a granular **`page-state`** reset that bypasses interruptions at the source. This method is structurally undetectable and independent of YouTube’s shifting code.
-  
-- An **`"Unmute" zone`** is also added after reloads to make YouTube browsing accessibility-friendly. Additionally, it prevents data consumption by not allowing normally downloaded elements, making this data-seamless.
-  
-Current Patch Notes `[v3.0.6]`:
-- Neutralizes monetization-slot renderers and media streams before they can consume mobile data.
-- rAF Sync Engine: Leverages requestAnimationFrame for stutter-free UI and zero CPU overhead when possible.
-- Touch Zone Accessibility: Touch zones meant for instant, reliable audio restoration.
-<br>
-
-## 💎 How is this free?
-URL Shield AB+ is 100% free for personal use. Unlike other extensions that offer "7-day trials" or subscriptions, this userscript is provided as an open-source tool for the community. There are no hidden fees, no "Pro" versions, and no tiers.
-
-<br>
-
-## 📱 Why the Manual Unmute?
-Modern mobile browsers (Chrome/Safari) enforce a Strict Gesture Requirement. Audio cannot play automatically after a page state reset without a physical user interaction. 
-
-URL Shield AB+ provides an optimized "Tap Zone" to satisfy this security handshake instantly, ensuring your autoplay continues without a permanent mute. You may need to repeat this over several videos to maintain video player functionality after YouTube monetization. 
-
-## This project is a work in progress. 
-If you have ideas for better data blockade, or want UI improvements like customizing and bringing the tap to unmute to any playing video, I’d love for you to contribute in any way. Please reach out by opening a new issue!
-
->**`Volatile Build`** (Auto-Unmute, No UI, Less Errors): [v4.0.1](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta.user.js)            |            [v4.0.1 Safari](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta-safari.user.js)
-<br>
 
 ## Copyright
 The source code of this repository is available for personal use only. If you would like to copy and modify it for your own personal use, you're welcome to do so without any limitations.
