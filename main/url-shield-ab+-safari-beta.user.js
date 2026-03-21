@@ -1,5 +1,6 @@
 // ==UserScript==
-// @name YouTube Mobile URL Shield AB+ [Safari Elite]
+// @name YouTube Mobile URL Shield AB+
+// @namespace http://tampermonkey.com/
 // @version 3.0.7-S
 // @match https://*.youtube.com/*
 // @run-at document-start
