@@ -51,10 +51,11 @@ URL Shield offers a different path to achieving uninteruppted mobile YouTube bro
   
 - An **`"Unmute" zone`** is also added after reloads to make YouTube browsing accessibility-friendly. Additionally, it prevents data consumption by not allowing normally downloaded elements, making this data-seamless.
   
-Current Patch Notes `[v3.0.6]`:
-- Neutralizes monetization-slot renderers and media streams before they can consume mobile data.
-- rAF Sync Engine: Leverages requestAnimationFrame for stutter-free UI and zero CPU overhead when possible.
-- Touch Zone Accessibility: Touch zones meant for instant, reliable audio restoration.
+Current Patch Notes `[v3.0.8]`:
+- ⚠️ Ambient Mode Fix: Strict implementation of the GUI culling, eliminating the "Ghosting" flicker and black-box artifacts on /watch URLs during Landscape playback.
+- ⚠️ Navigation State Reset: Resolved the "Hide" GUI persistence issue; the UI now correctly resets and stays in /results URLs when navigating back from Search Results.
+- ⚠️ DOM Lifecycle Optimization: Integrated a parentNode validation check to prevent redundant element appending, significantly reducing CPU overhead and layout thrashing.
+
 <br>
 
 ## 💎 How is this free?
