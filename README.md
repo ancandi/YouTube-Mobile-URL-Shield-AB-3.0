@@ -15,7 +15,7 @@ URL Shield offers a different path to achieving uninteruppted mobile YouTube bro
 <br>
 
 ## 🛠️ How to use the Beta
-**`Install:`** Add the script to your mobile manager (Kiwi, Firefox, or Safar).
+**`Install:`** Add the script to your mobile manager (Tampermonkey, Firefox, or Safari).
 
 **`Browse:`** Open any YouTube video; the script silently monitors the player.
 
