@@ -58,8 +58,8 @@ URL Shield offers a different path to achieving uninteruppted mobile YouTube bro
 | Method | Data Usage | Net Savings | CPU Impact |
 | :--- | :--- | :--- | :--- |
 | **Official YouTube App** | ~2.35 GB | Baseline | High |
-| **Browser + uBlock** | ~2.10 GB | ~11% | Moderate |
-| **Shield AB+ v3.0.8** | **~2.02 GB** | **~14%** | **Ultra-Low** |
+| **Browser + uBlock** | ~2.10 GB | ~11% or 250MB | Moderate |
+| **Shield AB+ v3.0.8** | **~2.02 GB** | **~14% or 330MB** | **Low** |
 
 > **Technical Insight:** Shield AB+ achieves higher data savings than standard blockers by killing renderers before the browser fetches `.m4s` video chunks for monetization segments. Using a selection of approved userscripts, general browsing experience on mobile is significantly improved.
 
