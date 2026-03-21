@@ -74,6 +74,10 @@ If you have ideas for better data blockade, or want UI improvements like customi
 >**`Volatile Build`** (Auto-Unmute, No UI, Less Errors): [v4.0.1](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta.user.js)            |            [v4.0.1 Safari](https://github.com/ancandi/YouTube-Mobile-URL-Shield-AB/raw/refs/heads/main/url-shield-ab+-test-beta-safari.user.js)
 <br>
 
+## AND1 UserScripts — This is the complete collection of high-performance, streamlined userscripts designed to reclaim control over mobile web experiences. ⬇
+> Otherwise, check out the full source code and technical documentation at **[github.com/ancandi](https://github.com/ancandi)**.
+
+<br>
 ## 🔍 Looking for more?
 ### 🛠️ The Userscript Directory
 > **Optimization Level:** Featherweight | **Last Updated:** 2026
