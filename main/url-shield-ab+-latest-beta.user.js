@@ -44,12 +44,12 @@
             sh.style.pointerEvents = isW ? 'auto' : 'none';
             if (l && isS) {
                 sh.style.display = hi.style.display = 'none'; 
-                !tb.parentNode && d.body.append(sh, tb, th);
+                if (!tb.parentNode) d.body.append(sh, tb, th);
                 tb.style.display = th.style.display = 'block';
             } else {
                 tb.style.display = th.style.display = 'none';
                 if ([...d.getElementsByTagName('video')].some(v => v.src && !v.paused && v.muted)) {
-                    !sh.parentNode && d.body.append(sh, hi);
+                    if (!sh.parentNode) d.body.append(sh, hi);
                     sh.style.display = 'block'; br.style.display = 'flex';
                     hi.style.display = (isS && !l) ? 'block' : 'none';
                 } else if (!u) sh.style.display = hi.style.display = 'none';
