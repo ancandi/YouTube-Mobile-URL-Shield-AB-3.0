@@ -64,7 +64,7 @@ URL Shield offers a different path to achieving uninteruppted mobile YouTube bro
 > **Technical Insight:** Shield AB+ achieves higher data savings than standard blockers by killing renderers before the browser fetches `.m4s` video chunks for advertisements.
 
 ---
-Current Patch Notes `[v3.0.8]`:
+**Current Patch Notes `[v3.0.8]`:**
 - `Ambient Mode Fix:` Strict implementation of the GUI culling, eliminating the `fullscreen-mode flickers` and `black element artifacts` on /watch URLs during Landscape playback.
 - `DOM Lifecycle Optimization:` Integrated a validation check to prevent redundant elements appending, significantly reducing CPU overhead and layout issues.
 
