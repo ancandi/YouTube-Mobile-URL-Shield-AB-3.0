@@ -152,7 +152,7 @@ Prevents aggressive "Forced Dark Mode" on mobile browsers from breaking specific
 ---
 
 #### 🕶 Force Dark Mode Exceptions
-**Version 1.0** | *UI Fidelity & Chrome Desktop Flag Control*
+**Version 1.1** | *UI Fidelity & Chrome Desktop Flag Control*
 
 Neutralizes the aggressive enable-force-dark flag in Chrome for specific sites. Prevents broken UI elements and maintains original color palettes on whitelisted domains.
 
